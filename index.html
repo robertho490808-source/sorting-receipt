@@ -142,8 +142,8 @@
                 </div>
                 <div class="flex items-center space-x-3">
                     <label class="cursor-pointer inline-flex items-center space-x-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-2 rounded-lg text-xs font-medium transition border border-slate-300">
-                        <i data-lucide="image" class="w-4 h-4"></i>
-                        <span>更換印章</span>
+                        <i data-lucide="upload" class="w-4 h-4"></i>
+                        <span>上傳印章圖片</span>
                         <input type="file" accept="image/*" onchange="handleStampUpload(event)" class="hidden">
                     </label>
                     <button onclick="window.print()" class="inline-flex items-center space-x-2 bg-brand-600 hover:bg-brand-700 text-white font-medium px-4 py-2 rounded-lg text-sm transition shadow-sm">
@@ -248,8 +248,12 @@
                         </div>
                         
                         <div class="text-center relative pr-4">
-                            <div id="stamp-container" class="w-36 h-36 relative inline-block transform -rotate-3">
-                                <img id="uploaded-stamp-img" class="w-full h-full object-contain stamp-overlay" alt="公司蓋章" />
+                            <div id="stamp-container" class="w-36 h-36 relative inline-block transform -rotate-3 border-2 border-dashed border-slate-300 rounded-lg flex items-center justify-center bg-slate-50 overflow-hidden">
+                                <img id="uploaded-stamp-img" class="w-full h-full object-contain stamp-overlay hidden" alt="公司蓋章" />
+                                <div id="stamp-placeholder" class="text-xs text-slate-400 p-2 text-center">
+                                    <i data-lucide="image-plus" class="w-6 h-6 mx-auto mb-1 opacity-50"></i>
+                                    <span>尚未上傳印章<br>請點上方按鈕上傳</span>
+                                </div>
                             </div>
                             <div class="text-xs font-bold text-slate-700 mt-1">公司蓋章</div>
                         </div>
@@ -264,53 +268,12 @@
         const SHEET_NAME = '工作表1';
         const CSV_EXPORT_URL = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(SHEET_NAME)}`;
 
-        const preloadedRecords = [
-            {
-                receiptNo: 'S-2609030',
-                location: '東明倉',
-                date: '9/16',
-                fullDate: '2026年09月16日',
-                taxId: '86427715',
-                customer: '奇鋐科技股份有限公司',
-                pallets: 12,
-                days: 1,
-                subtotal: 7400
-            },
-            {
-                receiptNo: 'S-2609031',
-                location: '東明倉',
-                date: '9/16',
-                fullDate: '2026年09月16日',
-                taxId: '86427715',
-                customer: '奇鋐科技股份有限公司',
-                pallets: 243,
-                days: 12,
-                subtotal: 108600
-            }
-        ];
-
-        let allRecords = [...preloadedRecords];
+        let allRecords = [];
         let filteredRecords = [];
         let selectedRecord = null;
 
-        // Optimized lightweight vector-quality official stamp SVG Data URI as default seal
-        const defaultStampSvg = "data:image/svg+xml;utf8," + encodeURIComponent(`
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 350">
-                <circle cx="175" cy="175" r="162" fill="none" stroke="#2563eb" stroke-width="5"/>
-                <circle cx="175" cy="175" r="152" fill="none" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="4,2"/>
-                <circle cx="175" cy="175" r="105" fill="none" stroke="#2563eb" stroke-width="2.5"/>
-                <text x="175" y="55" font-size="16.5" font-weight="bold" fill="#2563eb" text-anchor="middle" font-family="sans-serif">康宏數位科技物流股份有限公司</text>
-                <text x="175" y="306" font-size="13" font-weight="bold" fill="#2563eb" text-anchor="middle" font-family="sans-serif">台北市內湖區新湖一路183號4樓之1</text>
-                <text x="175" y="140" font-size="32" font-weight="bold" fill="#2563eb" text-anchor="middle" font-family="sans-serif">收 據</text>
-                <text x="175" y="186" font-size="30" font-weight="bold" fill="#2563eb" text-anchor="middle" font-family="sans-serif">專 用 章</text>
-                <text x="175" y="225" font-size="17" font-weight="bold" fill="#2563eb" text-anchor="middle" font-family="sans-serif">TEL:2794-3555</text>
-                <text x="175" y="253" font-size="17" font-weight="bold" fill="#2563eb" text-anchor="middle" font-family="sans-serif">2867-1198</text>
-            </svg>
-        `);
-
         window.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
-            document.getElementById('uploaded-stamp-img').src = defaultStampSvg;
             fetchSheetData();
         });
 
@@ -319,7 +282,11 @@
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    document.getElementById('uploaded-stamp-img').src = e.target.result;
+                    const imgEl = document.getElementById('uploaded-stamp-img');
+                    const placeholderEl = document.getElementById('stamp-placeholder');
+                    imgEl.src = e.target.result;
+                    imgEl.classList.remove('hidden');
+                    placeholderEl.classList.add('hidden');
                 }
                 reader.readAsDataURL(file);
             }
@@ -353,9 +320,9 @@
                     throw new Error(`無法連線試算表`);
                 }
             } catch (error) {
-                console.warn('使用離線預載資料：', error);
+                console.warn('連線試算表失敗：', error);
                 statusEl.className = "flex items-center space-x-2 bg-amber-950/80 text-amber-400 border border-amber-700/50 px-3 py-1.5 rounded-full text-xs font-medium";
-                statusEl.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-400"></span><span>顯示離線資料</span>`;
+                statusEl.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-400"></span><span>無法載入試算表資料</span>`;
             } finally {
                 refreshIcon.classList.remove('animate-spin');
                 populateFilterDropdowns();
@@ -424,7 +391,7 @@
                 const subtotal = parseFloat(row[9]) || 0;
 
                 // Validate header row doesn't leak into data records
-                if (receiptNo && receiptNo !== '請款單號' && !receiptNo.includes('請款') && (customer || location)) {
+                if (receiptNo && receiptNo !== '請款單號' && !receiptNo.includes('請款') && (customer || location) && pallets > 0) {
                     let fullDate = date;
                     if (date.includes('/')) {
                         const parts = date.split('/');
@@ -433,7 +400,12 @@
                         fullDate = `2026年${month}月${day}日`;
                     }
 
-                    const calculatedSubtotal = (pallets * 200) + (days * 5000);
+                    // Calculation logic:
+                    // Sorting fee = pallets * 200
+                    // Venue fee = days * 5000
+                    const sortingSubtotal = pallets * 200;
+                    const venueSubtotal = days * 5000;
+                    const calculatedSubtotal = sortingSubtotal + venueSubtotal;
 
                     records.push({
                         receiptNo,
@@ -564,12 +536,12 @@
             document.getElementById('receipt-no').innerText = record.receiptNo || '--';
             document.getElementById('receipt-date').innerText = record.fullDate || '--';
 
-            // Item 1: Sorting Service Fee -> Quantity = pallets, Unit Price = $200 / 板
+            // Item 1: Sorting Service Fee -> Quantity = pallets 板, Unit Price = $200 / 板
             const sortingSubtotal = record.pallets * 200;
             document.getElementById('item1-qty').innerText = `${record.pallets} 板`;
             document.getElementById('item1-subtotal').innerText = sortingSubtotal.toLocaleString();
 
-            // Item 2: Venue Fee -> Quantity = days (from H column), Unit Price = $5,000 / 天
+            // Item 2: Venue Fee -> Quantity = days 天 (from H column), Unit Price = $5,000 / 天
             const venueSubtotal = record.days * 5000;
             document.getElementById('item2-qty').innerText = `${record.days} 天`;
             document.getElementById('item2-subtotal').innerText = venueSubtotal.toLocaleString();
