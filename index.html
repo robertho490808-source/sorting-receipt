@@ -256,7 +256,7 @@
                                 <input type="file" id="stamp-upload" accept="image/*" class="hidden" onchange="handleStampUpload(event)">
                             </label>
 
-                            <!-- Stamp Container with User Default Uploaded Stamp -->
+                            <!-- Stamp Container with User Default Official Uploaded Stamp -->
                             <div id="stamp-container" class="w-40 h-40 relative inline-block transform -rotate-3 transition-transform hover:rotate-0">
                                 <img id="uploaded-stamp-img" class="w-full h-full object-contain stamp-overlay" alt="公司蓋章" />
                             </div>
@@ -285,7 +285,7 @@
                 pallets: 12,
                 pricePerPallet: 200,
                 days: 1,
-                venueFee: 5000,
+                venueUnitPrice: 5000,
                 subtotal: 7400
             },
             {
@@ -298,7 +298,7 @@
                 pallets: 243,
                 pricePerPallet: 200,
                 days: 12,
-                venueFee: 5000,
+                venueUnitPrice: 5000,
                 subtotal: 108600
             }
         ];
@@ -307,12 +307,12 @@
         let filteredRecords = [];
         let selectedRecord = null;
 
-        // Official user stamp base64 data URI
-        const defaultStampBase64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIIAAACBCAYAAAAMl2JTAACFZ0lEQVR4nNT9V4xtWXrnif3WWtseb8NHXO9N+qrMqqysqqxiFU2RHJLdzZ52GkH9MpAwMw8DDCBAA1B600CCHgQIgmYgNAY94jSH0+xms5pQLJ/JrPTuen9v3LjhzfHnbLPW0sPeEfemqSQL7h91S70TecCdi77P3tz7z//7ff4k/+IM/4D/7L//3FhRSglQgAStAIDAGBCCkxZIf1mItOFKiFKQATGoRSmCURUhBHBustXhSyqVkGiSYlAk5uCYpCJSbLg5mCpxLBAU6mKkIqE1E6gEAk2LwGk5QvAQgO79PfvP/vvv0Akf7uYfR2S5N83f7t+d+3//8vM97Xv1UAAAMN01AAAD48f70+d+oAATAc119f3L6J7c/ff+/6/3t3X90+n899H3+u8t9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u";
+        // Default official user stamp base64 data URI
+        const defaultStampBase64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIIAAACBCAYAAAAMl2JTAACFZ0lEQVR4nNT9V4xtWXrnif3WWtseb8NHXO9N+qrMqqysqqxiFU2RHJLdzZ52GkH9MpAwMw8DDCBAA1B600CCHgQIgmYgNAY94jSH0+xms5pQLJ/JrPTuen9v3LjhzfHnbLPW0sPeEfemqSQL7h91S70TecCdi77P3tz7z//7ff4k/+IM/4D/7L//3FhRSglQgAStAIDAGBCCkxZIf1mItOFKiFKQATGoRSmCURUhBHBustXhSyqVkGiSYlAk5uCYpCJSbLg5mCpxLBAU6mKkIqE1E6gEAk2LwGk5QvAQgO79PfvP/vvv0Akf7uYfR2S5N83f7t+d+3//8vM97Xv1UAAAMN01AAAD48f70+d+oAATAc119f3L6J7c/ff+/6/3t3X90+n899H3+u8t9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u";
 
         window.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
-            // Set default uploaded stamp image
+            // Set default uploaded official stamp image
             document.getElementById('uploaded-stamp-img').src = defaultStampBase64;
             fetchSheetData();
         });
@@ -411,9 +411,9 @@
                 const taxId = row[3] || '';
                 const customer = row[4] || '';
                 const pallets = parseFloat(row[5]) || 0;          // Col F: Sorting 板數
-                const pricePerPallet = parseFloat(row[6]) || 200;  // Col G: Sorting 單價
+                const pricePerPallet = parseFloat(row[6]) || 200;  // Col G: Sorting 單價 ($200/板)
                 const days = parseFloat(row[7]) || 0;              // Col H: Sorting 天數 (場地費數量)
-                const venueFee = parseFloat(row[8]) || 5000;       // Col I: 場地費單價 (固定 5000)
+                const venueUnitPrice = parseFloat(row[8]) || 5000; // Col I: 場地費單價 ($5,000/天)
                 const subtotal = parseFloat(row[9]) || 0;
 
                 if (receiptNo && receiptNo !== '請款單號' && !receiptNo.includes('請款') && (customer || location)) {
@@ -425,8 +425,8 @@
                         fullDate = `2026年${month}月${day}日`;
                     }
 
-                    // Correct calculation: (pallets * pricePerPallet) + (days * venueFee)
-                    const calculatedSubtotal = (pallets * pricePerPallet) + (days * venueFee);
+                    // Correct calculation: (pallets * 200) + (days * 5000)
+                    const calculatedSubtotal = (pallets * 200) + (days * 5000);
 
                     records.push({
                         receiptNo,
@@ -436,9 +436,9 @@
                         taxId,
                         customer,
                         pallets,
-                        pricePerPallet,
+                        pricePerPallet: 200,
                         days,
-                        venueFee,
+                        venueUnitPrice: 5000,
                         subtotal: subtotal || calculatedSubtotal
                     });
                 }
@@ -547,7 +547,7 @@
             if (rec) selectRecord(rec);
         }
 
-        // Update Receipt Preview UI with correct Item calculations
+        // Update Receipt Preview UI with correct Item calculations (Sorting: Pallets x $200, Venue Fee: Days x $5000)
         function selectRecord(record) {
             selectedRecord = record;
             renderRecordsList();
@@ -560,15 +560,15 @@
             document.getElementById('receipt-date').innerText = record.fullDate || '--';
 
             // Item 1: Sorting Service (Qty = Pallets, Unit Price = $200/板)
-            const sortingSubtotal = record.pallets * record.pricePerPallet;
+            const sortingSubtotal = record.pallets * 200;
             document.getElementById('item1-qty').innerText = `${record.pallets} 板`;
-            document.getElementById('item1-price').innerText = `$${record.pricePerPallet.toLocaleString()}/板`;
+            document.getElementById('item1-price').innerText = `$200 / 板`;
             document.getElementById('item1-subtotal').innerText = sortingSubtotal.toLocaleString();
 
             // Item 2: Venue Fee (Qty = Days from Col H, Unit Price = $5,000/天)
-            const venueSubtotal = record.days * record.venueFee;
+            const venueSubtotal = record.days * 5000;
             document.getElementById('item2-qty').innerText = `${record.days} 天`;
-            document.getElementById('item2-price').innerText = `$${record.venueFee.toLocaleString()}/天`;
+            document.getElementById('item2-price').innerText = `$5,000 / 天`;
             document.getElementById('item2-subtotal').innerText = venueSubtotal.toLocaleString();
 
             // Grand Total
