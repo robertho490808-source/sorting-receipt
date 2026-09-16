@@ -85,7 +85,6 @@
     </header>
 
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col lg:flex-row gap-6">
-        <!-- Left Panel: Filters & Record List -->
         <section class="w-full lg:w-5/12 flex flex-col gap-4 no-print">
             <!-- Filter Box -->
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
@@ -248,16 +247,9 @@
                             <p>* 本收據經簽章後始生效力。</p>
                         </div>
                         
-                        <div class="text-center relative pr-4 group">
-                            <!-- Stamp Action Button (No-print) -->
-                            <label for="stamp-upload" class="no-print absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[11px] px-2.5 py-1 rounded-full cursor-pointer hover:bg-brand-600 transition shadow-sm opacity-80 hover:opacity-100 flex items-center space-x-1 whitespace-nowrap z-10">
-                                <i data-lucide="upload" class="w-3 h-3"></i>
-                                <span>更換印章照片</span>
-                                <input type="file" id="stamp-upload" accept="image/*" class="hidden" onchange="handleStampUpload(event)">
-                            </label>
-
-                            <!-- Stamp Container with Official User Stamp -->
-                            <div id="stamp-container" class="w-40 h-40 relative inline-block transform -rotate-3 transition-transform hover:rotate-0">
+                        <div class="text-center relative pr-4">
+                            <!-- Official User Stamp Container (Fixed & Lightweight SVG) -->
+                            <div id="stamp-container" class="w-36 h-36 relative inline-block transform -rotate-3">
                                 <img id="uploaded-stamp-img" class="w-full h-full object-contain stamp-overlay" alt="公司蓋章" />
                             </div>
                             <div class="text-xs font-bold text-slate-700 mt-1">公司蓋章</div>
@@ -307,8 +299,7 @@
         let filteredRecords = [];
         let selectedRecord = null;
 
-        // Embedded Official Stamp Base64 Data URI
-        // Generated directly from your official stamp image with transparent background
+        // Optimized Lightweight Official Stamp SVG Data URI
         const defaultStampBase64 = "data:image/svg+xml;utf8," + encodeURIComponent(`
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 350">
                 <circle cx="175" cy="175" r="162" fill="none" stroke="#2563eb" stroke-width="5"/>
@@ -367,7 +358,6 @@
             }
         }
 
-        // CSV Parser mapping columns correctly & strictly skipping header row
         function parseCSV(text) {
             if (!text || !text.trim()) return null;
 
@@ -414,7 +404,6 @@
             if (rows.length <= 1) return null;
 
             const records = [];
-            // Skip rows[0] (header row)
             for (let i = 1; i < rows.length; i++) {
                 const row = rows[i];
                 const receiptNo = row[0] || '';
@@ -422,10 +411,10 @@
                 const date = row[2] || '';
                 const taxId = row[3] || '';
                 const customer = row[4] || '';
-                const pallets = parseFloat(row[5]) || 0;          // Col F: Sorting 板數
-                const pricePerPallet = parseFloat(row[6]) || 200;  // Col G: Sorting 單價 ($200/板)
-                const days = parseFloat(row[7]) || 0;              // Col H: Sorting 天數 (場地費天數)
-                const venueUnitPrice = parseFloat(row[8]) || 5000; // Col I: 場地費單價 ($5,000/天)
+                const pallets = parseFloat(row[5]) || 0;
+                const pricePerPallet = parseFloat(row[6]) || 200;
+                const days = parseFloat(row[7]) || 0;
+                const venueUnitPrice = parseFloat(row[8]) || 5000;
                 const subtotal = parseFloat(row[9]) || 0;
 
                 if (receiptNo && receiptNo !== '請款單號' && !receiptNo.includes('請款') && (customer || location)) {
@@ -437,9 +426,6 @@
                         fullDate = `2026年${month}月${day}日`;
                     }
 
-                    // Correct calculation:
-                    // 1. Sorting Service = pallets * 200
-                    // 2. Venue Fee = days * 5000
                     const calculatedSubtotal = (pallets * 200) + (days * 5000);
 
                     records.push({
@@ -464,7 +450,6 @@
             const dateSelect = document.getElementById('date-filter');
             const vendorSelect = document.getElementById('vendor-filter');
 
-            // Strictly filter out header labels & invalid entries
             const dates = [...new Set(allRecords.map(r => r.date).filter(d => d && d !== '請款單日期' && !d.includes('日期')))];
             const vendors = [...new Set(allRecords.map(r => r.customer).filter(v => v && !v.includes('客戶名稱') && !v.includes('廠商')))];
 
@@ -562,9 +547,6 @@
             if (rec) selectRecord(rec);
         }
 
-        // Correct billing logic:
-        // Item 1 (Sorting Service): Qty = Pallets, Unit Price = $200 / 板, Subtotal = Pallets * 200
-        // Item 2 (Venue Fee): Qty = Days (from Col H), Unit Price = $5,000 / 天, Subtotal = Days * 5000
         function selectRecord(record) {
             selectedRecord = record;
             renderRecordsList();
@@ -576,17 +558,14 @@
             document.getElementById('receipt-no').innerText = record.receiptNo || '--';
             document.getElementById('receipt-date').innerText = record.fullDate || '--';
 
-            // Item 1: Sorting Service
             const sortingSubtotal = record.pallets * 200;
             document.getElementById('item1-qty').innerText = `${record.pallets} 板`;
             document.getElementById('item1-subtotal').innerText = sortingSubtotal.toLocaleString();
 
-            // Item 2: Venue Fee (Qty = Days from Col H)
             const venueSubtotal = record.days * 5000;
             document.getElementById('item2-qty').innerText = `${record.days} 天`;
             document.getElementById('item2-subtotal').innerText = venueSubtotal.toLocaleString();
 
-            // Grand Total
             const grandTotal = sortingSubtotal + venueSubtotal;
             document.getElementById('receipt-total').innerText = `NT$ ${grandTotal.toLocaleString()}`;
         }
@@ -604,18 +583,6 @@
             document.getElementById('item2-qty').innerText = '--';
             document.getElementById('item2-subtotal').innerText = '--';
             document.getElementById('receipt-total').innerText = 'NT$ 0';
-        }
-
-        function handleStampUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const imgEl = document.getElementById('uploaded-stamp-img');
-                    imgEl.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
         }
     </script>
 </body>
