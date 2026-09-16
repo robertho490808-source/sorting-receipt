@@ -219,14 +219,14 @@
                                     <td class="py-3 px-3 text-center">1</td>
                                     <td class="py-3 px-3 font-medium">Sorting 服務費</td>
                                     <td class="py-3 px-3 text-center" id="item1-qty">--</td>
-                                    <td class="py-3 px-3 text-center" id="item1-price">--</td>
+                                    <td class="py-3 px-3 text-center" id="item1-price">$200 / 板</td>
                                     <td class="py-3 px-3 text-right font-semibold" id="item1-subtotal">--</td>
                                 </tr>
                                 <tr>
                                     <td class="py-3 px-3 text-center">2</td>
                                     <td class="py-3 px-3 font-medium">場地費</td>
                                     <td class="py-3 px-3 text-center" id="item2-qty">--</td>
-                                    <td class="py-3 px-3 text-center" id="item2-price">--</td>
+                                    <td class="py-3 px-3 text-center" id="item2-price">$5,000 / 天</td>
                                     <td class="py-3 px-3 text-right font-semibold" id="item2-subtotal">--</td>
                                 </tr>
                             </tbody>
@@ -256,7 +256,7 @@
                                 <input type="file" id="stamp-upload" accept="image/*" class="hidden" onchange="handleStampUpload(event)">
                             </label>
 
-                            <!-- Stamp Container with User Default Official Uploaded Stamp -->
+                            <!-- Stamp Container with Official User Stamp -->
                             <div id="stamp-container" class="w-40 h-40 relative inline-block transform -rotate-3 transition-transform hover:rotate-0">
                                 <img id="uploaded-stamp-img" class="w-full h-full object-contain stamp-overlay" alt="公司蓋章" />
                             </div>
@@ -307,12 +307,23 @@
         let filteredRecords = [];
         let selectedRecord = null;
 
-        // Default official user stamp base64 data URI
-        const defaultStampBase64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIIAAACBCAYAAAAMl2JTAACFZ0lEQVR4nNT9V4xtWXrnif3WWtseb8NHXO9N+qrMqqysqqxiFU2RHJLdzZ52GkH9MpAwMw8DDCBAA1B600CCHgQIgmYgNAY94jSH0+xms5pQLJ/JrPTuen9v3LjhzfHnbLPW0sPeEfemqSQL7h91S70TecCdi77P3tz7z//7ff4k/+IM/4D/7L//3FhRSglQgAStAIDAGBCCkxZIf1mItOFKiFKQATGoRSmCURUhBHBustXhSyqVkGiSYlAk5uCYpCJSbLg5mCpxLBAU6mKkIqE1E6gEAk2LwGk5QvAQgO79PfvP/vvv0Akf7uYfR2S5N83f7t+d+3//8vM97Xv1UAAAMN01AAAD48f70+d+oAATAc119f3L6J7c/ff+/6/3t3X90+n899H3+u8t9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u8e9u";
+        // Official User Stamp SVG Data URI fallback / default
+        const defaultStampBase64 = "data:image/svg+xml;utf8," + encodeURIComponent(`
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+                <circle cx="150" cy="150" r="142" fill="none" stroke="#2563eb" stroke-width="4"/>
+                <circle cx="150" cy="150" r="134" fill="none" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="4,2"/>
+                <circle cx="150" cy="150" r="95" fill="none" stroke="#2563eb" stroke-width="2"/>
+                <text x="150" y="48" font-size="16" font-weight="bold" fill="#2563eb" text-anchor="middle" font-family="sans-serif">康宏數位科技物流股份有限公司</text>
+                <text x="150" y="272" font-size="13" font-weight="bold" fill="#2563eb" text-anchor="middle" font-family="sans-serif">台北市內湖區新湖一路183號4樓之1</text>
+                <text x="150" y="125" font-size="28" font-weight="bold" fill="#2563eb" text-anchor="middle" font-family="sans-serif">收 據</text>
+                <text x="150" y="165" font-size="26" font-weight="bold" fill="#2563eb" text-anchor="middle" font-family="sans-serif">專 用 章</text>
+                <text x="150" y="200" font-size="16" font-weight="bold" fill="#2563eb" text-anchor="middle" font-family="sans-serif">TEL:2794-3555</text>
+                <text x="150" y="224" font-size="16" font-weight="bold" fill="#2563eb" text-anchor="middle" font-family="sans-serif">2867-1198</text>
+            </svg>
+        `);
 
         window.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
-            // Set default uploaded official stamp image
             document.getElementById('uploaded-stamp-img').src = defaultStampBase64;
             fetchSheetData();
         });
@@ -355,7 +366,7 @@
             }
         }
 
-        // CSV Parser mapping columns correctly
+        // CSV Parser mapping columns correctly & skipping header row for filters
         function parseCSV(text) {
             if (!text || !text.trim()) return null;
 
@@ -412,7 +423,7 @@
                 const customer = row[4] || '';
                 const pallets = parseFloat(row[5]) || 0;          // Col F: Sorting 板數
                 const pricePerPallet = parseFloat(row[6]) || 200;  // Col G: Sorting 單價 ($200/板)
-                const days = parseFloat(row[7]) || 0;              // Col H: Sorting 天數 (場地費數量)
+                const days = parseFloat(row[7]) || 0;              // Col H: Sorting 天數 (場地費天數)
                 const venueUnitPrice = parseFloat(row[8]) || 5000; // Col I: 場地費單價 ($5,000/天)
                 const subtotal = parseFloat(row[9]) || 0;
 
@@ -425,7 +436,9 @@
                         fullDate = `2026年${month}月${day}日`;
                     }
 
-                    // Correct calculation: (pallets * 200) + (days * 5000)
+                    // Correct calculation:
+                    // 1. Sorting Service = pallets * 200
+                    // 2. Venue Fee = days * 5000
                     const calculatedSubtotal = (pallets * 200) + (days * 5000);
 
                     records.push({
@@ -450,8 +463,9 @@
             const dateSelect = document.getElementById('date-filter');
             const vendorSelect = document.getElementById('vendor-filter');
 
-            const dates = [...new Set(allRecords.map(r => r.date).filter(d => d && d !== '請款單日期' && !d.includes('日期')))];
-            const vendors = [...new Set(allRecords.map(r => r.customer).filter(v => v && !v.includes('客戶名稱') && !v.includes('廠商')))];
+            // Strictly filter out header labels
+            const dates = [...new Set(allRecords.map(r => r.date).filter(d => d && d !== '請款單日期' && !d.includes('日期') && !d.includes('日期')))];
+            const vendors = [...new Set(allRecords.map(r => r.customer).filter(v => v && !v.includes('客戶名稱') && !v.includes('廠商') && !v.includes('中文')))];
 
             dateSelect.innerHTML = '<option value="">全部日期</option>' + 
                 dates.map(d => `<option value="${d}">${d}</option>`).join('');
@@ -547,7 +561,9 @@
             if (rec) selectRecord(rec);
         }
 
-        // Update Receipt Preview UI with correct Item calculations (Sorting: Pallets x $200, Venue Fee: Days x $5000)
+        // Correct calculation logic:
+        // Item 1 (Sorting Service): Qty = Pallets, Unit Price = $200 / 板
+        // Item 2 (Venue Fee): Qty = Days (from Col H), Unit Price = $5,000 / 天
         function selectRecord(record) {
             selectedRecord = record;
             renderRecordsList();
@@ -559,16 +575,14 @@
             document.getElementById('receipt-no').innerText = record.receiptNo || '--';
             document.getElementById('receipt-date').innerText = record.fullDate || '--';
 
-            // Item 1: Sorting Service (Qty = Pallets, Unit Price = $200/板)
+            // Item 1: Sorting Service
             const sortingSubtotal = record.pallets * 200;
             document.getElementById('item1-qty').innerText = `${record.pallets} 板`;
-            document.getElementById('item1-price').innerText = `$200 / 板`;
             document.getElementById('item1-subtotal').innerText = sortingSubtotal.toLocaleString();
 
-            // Item 2: Venue Fee (Qty = Days from Col H, Unit Price = $5,000/天)
+            // Item 2: Venue Fee (Qty = Days from Col H)
             const venueSubtotal = record.days * 5000;
             document.getElementById('item2-qty').innerText = `${record.days} 天`;
-            document.getElementById('item2-price').innerText = `$5,000 / 天`;
             document.getElementById('item2-subtotal').innerText = venueSubtotal.toLocaleString();
 
             // Grand Total
@@ -585,10 +599,8 @@
             document.getElementById('receipt-no').innerText = '--';
             document.getElementById('receipt-date').innerText = '--';
             document.getElementById('item1-qty').innerText = '--';
-            document.getElementById('item1-price').innerText = '--';
             document.getElementById('item1-subtotal').innerText = '--';
             document.getElementById('item2-qty').innerText = '--';
-            document.getElementById('item2-price').innerText = '--';
             document.getElementById('item2-subtotal').innerText = '--';
             document.getElementById('receipt-total').innerText = 'NT$ 0';
         }
