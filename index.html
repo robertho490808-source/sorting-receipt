@@ -97,7 +97,6 @@
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <!-- Date Filter -->
                     <div>
                         <label class="block text-xs font-semibold text-slate-600 mb-1.5">選擇日期</label>
                         <select id="date-filter" onchange="applyFilters()" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-600 focus:border-brand-600 outline-none">
@@ -105,7 +104,6 @@
                         </select>
                     </div>
 
-                    <!-- Vendor Filter -->
                     <div>
                         <label class="block text-xs font-semibold text-slate-600 mb-1.5">選擇廠商 / 客戶</label>
                         <select id="vendor-filter" onchange="applyFilters()" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-600 focus:border-brand-600 outline-none">
@@ -114,7 +112,6 @@
                     </div>
                 </div>
 
-                <!-- Search Input -->
                 <div class="mt-4">
                     <div class="relative">
                         <i data-lucide="search" class="w-4 h-4 absolute left-3 top-3 text-slate-400"></i>
@@ -129,9 +126,8 @@
                 <span class="text-slate-400">點擊列表項目即可預覽收據</span>
             </div>
 
-            <!-- Records List Container -->
             <div id="records-list" class="space-y-3 overflow-y-auto max-h-[calc(100vh-320px)] pr-1">
-                <!-- Records injected dynamically by JS -->
+                <!-- Records injected dynamically -->
             </div>
         </section>
 
@@ -144,7 +140,12 @@
                     </span>
                     <span id="current-receipt-no" class="text-sm font-bold text-slate-700">未選擇</span>
                 </div>
-                <div class="flex items-center space-x-2">
+                <div class="flex items-center space-x-3">
+                    <label class="cursor-pointer inline-flex items-center space-x-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-2 rounded-lg text-xs font-medium transition border border-slate-300">
+                        <i data-lucide="image" class="w-4 h-4"></i>
+                        <span>更換印章</span>
+                        <input type="file" accept="image/*" onchange="handleStampUpload(event)" class="hidden">
+                    </label>
                     <button onclick="window.print()" class="inline-flex items-center space-x-2 bg-brand-600 hover:bg-brand-700 text-white font-medium px-4 py-2 rounded-lg text-sm transition shadow-sm">
                         <i data-lucide="printer" class="w-4 h-4"></i>
                         <span>列印 / 匯出 PDF</span>
@@ -154,7 +155,6 @@
 
             <!-- Printable Receipt Area -->
             <div class="bg-slate-200 p-4 lg:p-8 rounded-b-xl flex-1 flex justify-center items-start overflow-auto shadow-inner">
-                
                 <div id="printable-receipt-area" class="bg-white w-full max-w-[210mm] p-8 md:p-12 rounded-lg shadow-xl border border-slate-200 text-slate-900 relative">
                     <!-- Receipt Header -->
                     <div class="flex justify-between items-start border-b-2 border-slate-900 pb-5 mb-6">
@@ -248,7 +248,6 @@
                         </div>
                         
                         <div class="text-center relative pr-4">
-                            <!-- Official User Stamp Container (Fixed & Lightweight SVG) -->
                             <div id="stamp-container" class="w-36 h-36 relative inline-block transform -rotate-3">
                                 <img id="uploaded-stamp-img" class="w-full h-full object-contain stamp-overlay" alt="公司蓋章" />
                             </div>
@@ -256,7 +255,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </section>
     </main>
@@ -275,9 +273,7 @@
                 taxId: '86427715',
                 customer: '奇鋐科技股份有限公司',
                 pallets: 12,
-                pricePerPallet: 200,
                 days: 1,
-                venueUnitPrice: 5000,
                 subtotal: 7400
             },
             {
@@ -288,9 +284,7 @@
                 taxId: '86427715',
                 customer: '奇鋐科技股份有限公司',
                 pallets: 243,
-                pricePerPallet: 200,
                 days: 12,
-                venueUnitPrice: 5000,
                 subtotal: 108600
             }
         ];
@@ -299,8 +293,8 @@
         let filteredRecords = [];
         let selectedRecord = null;
 
-        // Optimized Lightweight Official Stamp SVG Data URI
-        const defaultStampBase64 = "data:image/svg+xml;utf8," + encodeURIComponent(`
+        // Optimized lightweight vector-quality official stamp SVG Data URI as default seal
+        const defaultStampSvg = "data:image/svg+xml;utf8," + encodeURIComponent(`
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 350 350">
                 <circle cx="175" cy="175" r="162" fill="none" stroke="#2563eb" stroke-width="5"/>
                 <circle cx="175" cy="175" r="152" fill="none" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="4,2"/>
@@ -316,9 +310,20 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
-            document.getElementById('uploaded-stamp-img').src = defaultStampBase64;
+            document.getElementById('uploaded-stamp-img').src = defaultStampSvg;
             fetchSheetData();
         });
+
+        function handleStampUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('uploaded-stamp-img').src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        }
 
         async function fetchSheetData() {
             const refreshIcon = document.getElementById('refresh-icon');
@@ -333,24 +338,24 @@
                     const csvText = await response.text();
                     
                     if (csvText.trim().startsWith('<!DOCTYPE') || csvText.trim().startsWith('<html')) {
-                        throw new Error('試算表權限尚未開啟「知道連結的人皆可檢視」');
+                        throw new Error('試算表權限尚未開啟');
                     }
 
                     const parsed = parseCSV(csvText);
                     if (parsed && parsed.length > 0) {
                         allRecords = parsed;
                         statusEl.className = "flex items-center space-x-2 bg-emerald-950/80 text-emerald-400 border border-emerald-700/50 px-3 py-1.5 rounded-full text-xs font-medium";
-                        statusEl.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span><span>已成功同步 Google 試算表最新數據 (${parsed.length} 筆)</span>`;
+                        statusEl.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span><span>已同步 Google 試算表 (${parsed.length} 筆)</span>`;
                     } else {
                         throw new Error('試算表中無有效請款資料');
                     }
                 } else {
-                    throw new Error(`無法連線試算表 (HTTP ${response.status})`);
+                    throw new Error(`無法連線試算表`);
                 }
             } catch (error) {
                 console.warn('使用離線預載資料：', error);
                 statusEl.className = "flex items-center space-x-2 bg-amber-950/80 text-amber-400 border border-amber-700/50 px-3 py-1.5 rounded-full text-xs font-medium";
-                statusEl.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-400"></span><span>同步受限 (${error.message || '顯示離線資料'})</span>`;
+                statusEl.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-400"></span><span>顯示離線資料</span>`;
             } finally {
                 refreshIcon.classList.remove('animate-spin');
                 populateFilterDropdowns();
@@ -404,6 +409,7 @@
             if (rows.length <= 1) return null;
 
             const records = [];
+            // Start from index 1 to completely exclude header row (index 0)
             for (let i = 1; i < rows.length; i++) {
                 const row = rows[i];
                 const receiptNo = row[0] || '';
@@ -417,6 +423,7 @@
                 const venueUnitPrice = parseFloat(row[8]) || 5000;
                 const subtotal = parseFloat(row[9]) || 0;
 
+                // Validate header row doesn't leak into data records
                 if (receiptNo && receiptNo !== '請款單號' && !receiptNo.includes('請款') && (customer || location)) {
                     let fullDate = date;
                     if (date.includes('/')) {
@@ -436,9 +443,7 @@
                         taxId,
                         customer,
                         pallets,
-                        pricePerPallet: 200,
                         days,
-                        venueUnitPrice: 5000,
                         subtotal: subtotal || calculatedSubtotal
                     });
                 }
@@ -450,6 +455,7 @@
             const dateSelect = document.getElementById('date-filter');
             const vendorSelect = document.getElementById('vendor-filter');
 
+            // Strictly filter out any header strings from dropdown values
             const dates = [...new Set(allRecords.map(r => r.date).filter(d => d && d !== '請款單日期' && !d.includes('日期')))];
             const vendors = [...new Set(allRecords.map(r => r.customer).filter(v => v && !v.includes('客戶名稱') && !v.includes('廠商')))];
 
@@ -558,10 +564,12 @@
             document.getElementById('receipt-no').innerText = record.receiptNo || '--';
             document.getElementById('receipt-date').innerText = record.fullDate || '--';
 
+            // Item 1: Sorting Service Fee -> Quantity = pallets, Unit Price = $200 / 板
             const sortingSubtotal = record.pallets * 200;
             document.getElementById('item1-qty').innerText = `${record.pallets} 板`;
             document.getElementById('item1-subtotal').innerText = sortingSubtotal.toLocaleString();
 
+            // Item 2: Venue Fee -> Quantity = days (from H column), Unit Price = $5,000 / 天
             const venueSubtotal = record.days * 5000;
             document.getElementById('item2-qty').innerText = `${record.days} 天`;
             document.getElementById('item2-subtotal').innerText = venueSubtotal.toLocaleString();
