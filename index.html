@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorting 請款單與收據列印系統</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Noto Sans TC"', 'Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @media print {
+            body * {
+                visibility: hidden !important;
+            }
+            #printable-receipt-area, #printable-receipt-area * {
+                visibility: visible !important;
+            }
+            #printable-receipt-area {
+                position: absolute !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 15mm 15mm !important;
+                box-shadow: none !important;
+                border: none !important;
+                background: white !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+        .stamp-overlay {
+            mix-blend-mode: multiply;
+        }
+    </style>
+</head>
+<body class="h-full text-slate-800 flex flex-col font-sans">
+    <!-- Top Header -->
+    <header class="bg-slate-900 text-white shadow-md sticky top-0 z-30 no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-brand-600 p-2 rounded-lg text-white">
+                    <i data-lucide="file-text" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg tracking-wide">Sorting 請款單與收據管理系統</h1>
+                    <p class="text-xs text-slate-400">康宏數位科技物流股份有限公司</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-3 text-sm">
+                <div id="connection-status" class="flex items-center space-x-2 bg-emerald-950/80 text-emerald-400 border border-emerald-700/50 px-3 py-1.5 rounded-full text-xs font-medium">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span>已連線至 Google 試算表</span>
+                </div>
+                <button onclick="fetchSheetData()" class="flex items-center space-x-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg border border-slate-700 transition">
+                    <i data-lucide="refresh-cw" class="w-4 h-4" id="refresh-icon"></i>
+                    <span>重新整理數據</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col lg:flex-row gap-6">
+        <!-- Left Panel: Filters & Record List -->
+        <section class="w-full lg:w-5/12 flex flex-col gap-4 no-print">
+            <!-- Filter Box -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="font-bold text-slate-900 flex items-center space-x-2">
+                        <i data-lucide="filter" class="w-4 h-4 text-brand-600"></i>
+                        <span>條件篩選與搜尋</span>
+                    </h2>
+                    <button onclick="resetFilters()" class="text-xs text-brand-600 hover:text-brand-800 font-medium">重設篩選</button>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Date Filter -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1.5">選擇日期</label>
+                        <select id="date-filter" onchange="applyFilters()" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-600 focus:border-brand-600 outline-none">
+                            <option value="">全部日期</option>
+                        </select>
+                    </div>
+
+                    <!-- Vendor Filter -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1.5">選擇廠商 / 客戶</label>
+                        <select id="vendor-filter" onchange="applyFilters()" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-600 focus:border-brand-600 outline-none">
+                            <option value="">全部廠商</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Search Input -->
+                <div class="mt-4">
+                    <div class="relative">
+                        <i data-lucide="search" class="w-4 h-4 absolute left-3 top-3 text-slate-400"></i>
+                        <input type="text" id="search-input" oninput="applyFilters()" placeholder="搜尋單號、地點、統編..." class="w-full bg-slate-50 border border-slate-300 rounded-lg pl-9 pr-3 py-2 text-sm focus:ring-2 focus:ring-brand-600 focus:border-brand-600 outline-none">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Records Count & List Header -->
+            <div class="flex items-center justify-between text-xs text-slate-500 px-1">
+                <span>符合條件的筆數：<strong id="record-count" class="text-slate-900 font-bold">0</strong> 筆</span>
+                <span class="text-slate-400">點擊列表項目即可預覽收據</span>
+            </div>
+
+            <!-- Records List Container -->
+            <div id="records-list" class="space-y-3 overflow-y-auto max-h-[calc(100vh-320px)] pr-1">
+                <!-- Records injected dynamically by JS -->
+            </div>
+        </section>
+
+        <!-- Right Panel: Receipt Preview -->
+        <section class="w-full lg:w-7/12 flex flex-col">
+            <!-- Preview Action Toolbar -->
+            <div class="bg-white border border-slate-200 rounded-t-xl p-4 flex items-center justify-between no-print shadow-sm">
+                <div class="flex items-center space-x-2">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-brand-50 text-brand-700">
+                        收據預覽
+                    </span>
+                    <span id="current-receipt-no" class="text-sm font-bold text-slate-700">未選擇</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button onclick="window.print()" class="inline-flex items-center space-x-2 bg-brand-600 hover:bg-brand-700 text-white font-medium px-4 py-2 rounded-lg text-sm transition shadow-sm">
+                        <i data-lucide="printer" class="w-4 h-4"></i>
+                        <span>列印 / 匯出 PDF</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Printable Receipt Display Card -->
+            <div class="bg-slate-200 p-4 lg:p-8 rounded-b-xl flex-1 flex justify-center items-start overflow-auto shadow-inner">
+                
+                <div id="printable-receipt-area" class="bg-white w-full max-w-[210mm] p-8 md:p-12 rounded-lg shadow-xl border border-slate-200 text-slate-900 relative">
+                    <!-- Receipt Header -->
+                    <div class="flex justify-between items-start border-b-2 border-slate-900 pb-5 mb-6">
+                        <div>
+                            <h2 class="text-xl font-bold tracking-tight text-slate-900">康宏數位科技物流股份有限公司</h2>
+                            <p class="text-xs text-slate-500 mt-1">Sorting 作業服務請款專用單據</p>
+                        </div>
+                        <div class="text-right">
+                            <h1 class="text-3xl font-extrabold text-slate-900 tracking-widest">收 據</h1>
+                        </div>
+                    </div>
+
+                    <!-- Meta Information Grid -->
+                    <div class="grid grid-cols-2 gap-y-3 gap-x-6 text-sm mb-6">
+                        <div class="space-y-2">
+                            <div class="flex">
+                                <span class="w-24 font-bold text-slate-700">買方客戶</span>
+                                <span class="mr-2">:</span>
+                                <span id="receipt-customer" class="font-medium text-slate-900">--</span>
+                            </div>
+                            <div class="flex">
+                                <span class="w-24 font-bold text-slate-700">統一編號</span>
+                                <span class="mr-2">:</span>
+                                <span id="receipt-taxid" class="font-medium text-slate-900">--</span>
+                            </div>
+                            <div class="flex">
+                                <span class="w-24 font-bold text-slate-700">作業地點</span>
+                                <span class="mr-2">:</span>
+                                <span id="receipt-location" class="font-medium text-slate-900">--</span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <div class="flex">
+                                <span class="w-24 font-bold text-slate-700">單號</span>
+                                <span class="mr-2">:</span>
+                                <span id="receipt-no" class="font-bold text-slate-900">--</span>
+                            </div>
+                            <div class="flex">
+                                <span class="w-24 font-bold text-slate-700">開立日期</span>
+                                <span class="mr-2">:</span>
+                                <span id="receipt-date" class="font-medium text-slate-900">--</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Items Table -->
+                    <div class="border-t border-b border-slate-900 my-6">
+                        <table class="w-full text-left text-sm border-collapse">
+                            <thead>
+                                <tr class="border-b border-slate-300 bg-slate-50 text-slate-800">
+                                    <th class="py-2.5 px-3 text-center w-12 font-bold">#</th>
+                                    <th class="py-2.5 px-3 font-bold">項目說明</th>
+                                    <th class="py-2.5 px-3 text-center font-bold">數量/板數</th>
+                                    <th class="py-2.5 px-3 text-center font-bold">單價/天數</th>
+                                    <th class="py-2.5 px-3 text-right font-bold">小計 (NT$)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="receipt-items-body" class="divide-y divide-slate-200">
+                                <tr>
+                                    <td class="py-3 px-3 text-center">1</td>
+                                    <td class="py-3 px-3 font-medium">Sorting 服務費</td>
+                                    <td class="py-3 px-3 text-center" id="item1-qty">--</td>
+                                    <td class="py-3 px-3 text-center" id="item1-price">--</td>
+                                    <td class="py-3 px-3 text-right font-semibold" id="item1-subtotal">--</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3 px-3 text-center">2</td>
+                                    <td class="py-3 px-3 font-medium">場地費</td>
+                                    <td class="py-3 px-3 text-center" id="item2-qty">1式</td>
+                                    <td class="py-3 px-3 text-center" id="item2-price">--</td>
+                                    <td class="py-3 px-3 text-right font-semibold" id="item2-subtotal">--</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Total Amount Box -->
+                    <div class="flex justify-end my-6">
+                        <div class="border-2 border-slate-900 bg-slate-50 px-6 py-3 rounded-lg flex items-center space-x-4">
+                            <span class="text-base font-bold text-slate-700">總金額:</span>
+                            <span id="receipt-total" class="text-2xl font-extrabold text-slate-900">NT$ 0</span>
+                        </div>
+                    </div>
+
+                    <!-- Footer & Stamp Section -->
+                    <div class="flex justify-between items-end mt-12 pt-6 border-t border-slate-200">
+                        <div class="text-xs text-slate-500 space-y-1">
+                            <p>* 如對本單據內容有任何疑問，請於 7 日內與開立單位聯繫。</p>
+                            <p>* 本收據經簽章後始生效力。</p>
+                        </div>
+                        
+                        <div class="text-center relative pr-4">
+                            <!-- High Quality SVG Stamp Representation -->
+                            <div class="w-36 h-36 relative inline-block">
+                                <svg viewBox="0 0 200 200" class="w-full h-full text-blue-600 opacity-90 stroke-current">
+                                    <!-- Double Circle Border -->
+                                    <circle cx="100" cy="100" r="95" fill="none" stroke-width="4" />
+                                    <circle cx="100" cy="100" r="88" fill="none" stroke-width="1.5" />
+                                    <circle cx="100" cy="100" r="58" fill="none" stroke-width="1.5" />
+                                    
+                                    <!-- Curved Company Name Text -->
+                                    <path id="textPathTop" d="M 22,100 A 78,78 0 1,1 178,100" fill="none" stroke="none"/>
+                                    <text font-size="13" font-weight="bold" fill="currentColor" stroke="none">
+                                        <textPath href="#textPathTop" startOffset="50%" text-anchor="middle">
+                                            康宏數位科技物流股份有限公司
+                                        </textPath>
+                                    </text>
+
+                                    <!-- Bottom Address Text -->
+                                    <path id="textPathBottom" d="M 175,100 A 75,75 0 0,1 25,100" fill="none" stroke="none"/>
+                                    <text font-size="11" font-weight="bold" fill="currentColor" stroke="none">
+                                        <textPath href="#textPathBottom" startOffset="50%" text-anchor="middle">
+                                            台北市內湖區新湖一路81號8樓
+                                        </textPath>
+                                    </text>
+
+                                    <!-- Center Box Text -->
+                                    <text x="100" y="75" font-size="20" font-weight="extrabold" fill="currentColor" stroke="none" text-anchor="middle">收 據</text>
+                                    <text x="100" y="98" font-size="16" font-weight="bold" fill="currentColor" stroke="none" text-anchor="middle">專用章</text>
+                                    <text x="100" y="118" font-size="11" font-weight="bold" fill="currentColor" stroke="none" text-anchor="middle">TEL: 2794-8555</text>
+                                    <text x="100" y="132" font-size="11" font-weight="bold" fill="currentColor" stroke="none" text-anchor="middle">2867-1198</text>
+                                </svg>
+                            </div>
+                            <div class="text-xs font-bold text-slate-700 mt-1">公司蓋章</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Google Sheet Embedded Pre-loaded & Dynamic Data Handler
+        const SPREADSHEET_ID = '1i_7xQFV2i2l5qAc-bV87gdoWHkAisrXAJGsXSu07_XY';
+        const CSV_EXPORT_URL = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=工作表1`;
+
+        // Preloaded dataset from context to ensure instant loading without CORS issues
+        const preloadedRecords = [
+            {
+                receiptNo: 'S-2609030',
+                location: '東明倉',
+                date: '9/16',
+                fullDate: '2026年09月16日',
+                taxId: '86427715',
+                customer: '奇鋐科技股份有限公司',
+                pallets: 12,
+                pricePerPallet: 200,
+                days: 2,
+                venueFee: 5000,
+                subtotal: 12400
+            },
+            {
+                receiptNo: 'S-2609031',
+                location: '東明倉',
+                date: '9/16',
+                fullDate: '2026年09月16日',
+                taxId: '86427715',
+                customer: '奇鋐科技股份有限公司',
+                pallets: 243,
+                pricePerPallet: 200,
+                days: 12,
+                venueFee: 5000,
+                subtotal: 108600
+            }
+        ];
+
+        let allRecords = [...preloadedRecords];
+        let filteredRecords = [];
+        let selectedRecord = null;
+
+        // Initialize App
+        window.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            fetchSheetData();
+        });
+
+        // Fetch Data from Google Sheet CSV or fallback to preloaded
+        async function fetchSheetData() {
+            const refreshIcon = document.getElementById('refresh-icon');
+            refreshIcon.classList.add('animate-spin');
+
+            try {
+                const response = await fetch(CSV_EXPORT_URL);
+                if (response.ok) {
+                    const csvText = await response.text();
+                    const parsed = parseCSV(csvText);
+                    if (parsed && parsed.length > 0) {
+                        allRecords = parsed;
+                    }
+                }
+            } catch (error) {
+                console.log('Using preloaded sheet data:', error);
+            } finally {
+                refreshIcon.classList.remove('animate-spin');
+                populateFilterDropdowns();
+                applyFilters();
+            }
+        }
+
+        // CSV Parser
+        function parseCSV(text) {
+            const lines = text.split('\n').map(l => l.trim()).filter(l => l);
+            if (lines.length <= 1) return null;
+
+            const records = [];
+            for (let i = 1; i < lines.length; i++) {
+                // Split by comma handling quotes
+                const row = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(cell => cell.replace(/^"|"$/g, '').trim());
+                
+                const receiptNo = row[0] || '';
+                const location = row[1] || '';
+                const date = row[2] || '';
+                const taxId = row[3] || '';
+                const customer = row[4] || '';
+                const pallets = parseFloat(row[5]) || 0;
+                const pricePerPallet = parseFloat(row[6]) || 0;
+                const days = parseFloat(row[7]) || 0;
+                const venueFee = parseFloat(row[8]) || 0;
+                const subtotal = parseFloat(row[9]) || 0;
+
+                // Only include rows with valid data
+                if (receiptNo && (customer || location || subtotal > 0)) {
+                    // Format date
+                    let fullDate = date;
+                    if (date.includes('/')) {
+                        const parts = date.split('/');
+                        const month = parts[0].padStart(2, '0');
+                        const day = parts[1].padStart(2, '0');
+                        fullDate = `2026年${month}月${day}日`;
+                    }
+
+                    records.push({
+                        receiptNo,
+                        location,
+                        date,
+                        fullDate,
+                        taxId,
+                        customer,
+                        pallets,
+                        pricePerPallet,
+                        days,
+                        venueFee,
+                        subtotal: subtotal || (pallets * pricePerPallet + venueFee * days)
+                    });
+                }
+            }
+            return records.length > 0 ? records : null;
+        }
+
+        // Populate Date & Vendor Filter Options
+        function populateFilterDropdowns() {
+            const dateSelect = document.getElementById('date-filter');
+            const vendorSelect = document.getElementById('vendor-filter');
+
+            const dates = [...new Set(allRecords.map(r => r.date).filter(Boolean))];
+            const vendors = [...new Set(allRecords.map(r => r.customer).filter(Boolean))];
+
+            dateSelect.innerHTML = '<option value="">全部日期</option>' + 
+                dates.map(d => `<option value="${d}">${d}</option>`).join('');
+
+            vendorSelect.innerHTML = '<option value="">全部廠商</option>' + 
+                vendors.map(v => `<option value="${v}">${v}</option>`).join('');
+        }
+
+        // Apply Filters
+        function applyFilters() {
+            const selectedDate = document.getElementById('date-filter').value;
+            const selectedVendor = document.getElementById('vendor-filter').value;
+            const searchText = document.getElementById('search-input').value.toLowerCase();
+
+            filteredRecords = allRecords.filter(r => {
+                const matchDate = !selectedDate || r.date === selectedDate;
+                const matchVendor = !selectedVendor || r.customer === selectedVendor;
+                const matchSearch = !searchText || 
+                    r.receiptNo.toLowerCase().includes(searchText) ||
+                    r.customer.toLowerCase().includes(searchText) ||
+                    r.location.toLowerCase().includes(searchText) ||
+                    r.taxId.includes(searchText);
+
+                return matchDate && matchVendor && matchSearch;
+            });
+
+            document.getElementById('record-count').innerText = filteredRecords.length;
+            renderRecordsList();
+
+            // Auto select first record if none selected or current not in list
+            if (filteredRecords.length > 0) {
+                if (!selectedRecord || !filteredRecords.some(r => r.receiptNo === selectedRecord.receiptNo)) {
+                    selectRecord(filteredRecords[0]);
+                }
+            } else {
+                clearReceiptPreview();
+            }
+        }
+
+        // Reset Filters
+        function resetFilters() {
+            document.getElementById('date-filter').value = '';
+            document.getElementById('vendor-filter').value = '';
+            document.getElementById('search-input').value = '';
+            applyFilters();
+        }
+
+        // Render Record Cards List
+        function renderRecordsList() {
+            const listEl = document.getElementById('records-list');
+            
+            if (filteredRecords.length === 0) {
+                listEl.innerHTML = `
+                    <div class="bg-white rounded-xl border border-dashed border-slate-300 p-8 text-center text-slate-400">
+                        <i data-lucide="inbox" class="w-10 h-10 mx-auto mb-2 text-slate-300"></i>
+                        <p class="text-sm">沒有找到符合條件的請款紀錄</p>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            listEl.innerHTML = filteredRecords.map(r => {
+                const isSelected = selectedRecord && selectedRecord.receiptNo === r.receiptNo;
+                return `
+                    <div onclick="selectRecordByNo('${r.receiptNo}')" 
+                         class="cursor-pointer bg-white rounded-xl p-4 border transition-all shadow-sm hover:shadow-md ${isSelected ? 'border-brand-600 ring-2 ring-brand-600/20 bg-brand-50/30' : 'border-slate-200 hover:border-slate-300'}">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-bold text-sm text-slate-900 flex items-center space-x-1.5">
+                                <span class="w-2 h-2 rounded-full ${isSelected ? 'bg-brand-600' : 'bg-slate-300'}"></span>
+                                <span>${r.receiptNo}</span>
+                            </span>
+                            <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">
+                                ${r.date}
+                            </span>
+                        </div>
+                        <div class="text-xs text-slate-600 space-y-1 mb-3">
+                            <div class="font-medium text-slate-800 text-sm truncate">${r.customer || '未命名廠商'}</div>
+                            <div class="flex justify-between text-slate-500">
+                                <span>統編：${r.taxId || '無'}</span>
+                                <span>地點：${r.location || '無'}</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center pt-2 border-t border-slate-100 text-xs">
+                            <span class="text-slate-500">${r.pallets} 板 / ${r.days} 天</span>
+                            <span class="font-extrabold text-sm text-brand-700">NT$ ${r.subtotal.toLocaleString()}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            lucide.createIcons();
+        }
+
+        function selectRecordByNo(no) {
+            const rec = allRecords.find(r => r.receiptNo === no);
+            if (rec) selectRecord(rec);
+        }
+
+        // Update Receipt Preview UI
+        function selectRecord(record) {
+            selectedRecord = record;
+            renderRecordsList();
+
+            document.getElementById('current-receipt-no').innerText = record.receiptNo;
+            document.getElementById('receipt-customer').innerText = record.customer || '--';
+            document.getElementById('receipt-taxid').innerText = record.taxId || '--';
+            document.getElementById('receipt-location').innerText = record.location || '--';
+            document.getElementById('receipt-no').innerText = record.receiptNo || '--';
+            document.getElementById('receipt-date').innerText = record.fullDate || '--';
+
+            // Item 1: Sorting Service
+            const sortingSubtotal = record.pallets * record.pricePerPallet * 1;
+            document.getElementById('item1-qty').innerText = `${record.pallets} 板`;
+            document.getElementById('item1-price').innerText = `$${record.pricePerPallet.toLocaleString()}/板×1天`;
+            document.getElementById('item1-subtotal').innerText = sortingSubtotal.toLocaleString();
+
+            // Item 2: Venue Fee
+            const venueSubtotal = record.venueFee * record.days;
+            document.getElementById('item2-qty').innerText = '1式';
+            document.getElementById('item2-price').innerText = `$${record.venueFee.toLocaleString()}/天×${record.days}天`;
+            document.getElementById('item2-subtotal').innerText = venueSubtotal.toLocaleString();
+
+            // Total
+            const grandTotal = sortingSubtotal + venueSubtotal;
+            document.getElementById('receipt-total').innerText = `NT$ ${grandTotal.toLocaleString()}`;
+        }
+
+        function clearReceiptPreview() {
+            selectedRecord = null;
+            document.getElementById('current-receipt-no').innerText = '無選取資料';
+            document.getElementById('receipt-customer').innerText = '--';
+            document.getElementById('receipt-taxid').innerText = '--';
+            document.getElementById('receipt-location').innerText = '--';
+            document.getElementById('receipt-no').innerText = '--';
+            document.getElementById('receipt-date').innerText = '--';
+            document.getElementById('item1-qty').innerText = '--';
+            document.getElementById('item1-price').innerText = '--';
+            document.getElementById('item1-subtotal').innerText = '--';
+            document.getElementById('item2-price').innerText = '--';
+            document.getElementById('item2-subtotal').innerText = '--';
+            document.getElementById('receipt-total').innerText = 'NT$ 0';
+        }
+    </script>
+</body>
+</html>
