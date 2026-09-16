@@ -251,37 +251,67 @@
                             <p>* 本收據經簽章後始生效力。</p>
                         </div>
                         
-                        <div class="text-center relative pr-4">
-                            <!-- High Quality SVG Stamp Representation -->
-                            <div class="w-36 h-36 relative inline-block">
-                                <svg viewBox="0 0 200 200" class="w-full h-full text-blue-600 opacity-90 stroke-current">
-                                    <!-- Double Circle Border -->
-                                    <circle cx="100" cy="100" r="95" fill="none" stroke-width="4" />
-                                    <circle cx="100" cy="100" r="88" fill="none" stroke-width="1.5" />
-                                    <circle cx="100" cy="100" r="58" fill="none" stroke-width="1.5" />
-                                    
-                                    <!-- Curved Company Name Text -->
-                                    <path id="textPathTop" d="M 22,100 A 78,78 0 1,1 178,100" fill="none" stroke="none"/>
-                                    <text font-size="13" font-weight="bold" fill="currentColor" stroke="none">
-                                        <textPath href="#textPathTop" startOffset="50%" text-anchor="middle">
-                                            康宏數位科技物流股份有限公司
-                                        </textPath>
-                                    </text>
+                        <div class="text-center relative pr-4 group">
+                            <!-- Stamp Action Button (No-print) -->
+                            <label for="stamp-upload" class="no-print absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[11px] px-2.5 py-1 rounded-full cursor-pointer hover:bg-brand-600 transition shadow-sm opacity-80 hover:opacity-100 flex items-center space-x-1 whitespace-nowrap z-10">
+                                <i data-lucide="upload" class="w-3 h-3"></i>
+                                <span>上傳照片印章</span>
+                                <input type="file" id="stamp-upload" accept="image/*" class="hidden" onchange="handleStampUpload(event)">
+                            </label>
 
-                                    <!-- Bottom Address Text -->
-                                    <path id="textPathBottom" d="M 175,100 A 75,75 0 0,1 25,100" fill="none" stroke="none"/>
-                                    <text font-size="11" font-weight="bold" fill="currentColor" stroke="none">
-                                        <textPath href="#textPathBottom" startOffset="50%" text-anchor="middle">
-                                            台北市內湖區新湖一路81號8樓
-                                        </textPath>
-                                    </text>
+                            <!-- Stamp Container -->
+                            <div id="stamp-container" class="w-40 h-40 relative inline-block transform -rotate-3 transition-transform hover:rotate-0">
+                                <!-- Default Realistic SVG Stamp -->
+                                <svg id="svg-stamp" viewBox="0 0 200 200" class="w-full h-full opacity-90 stamp-overlay" style="color: #2b67d8;">
+                                    <defs>
+                                        <!-- Ink texture filter for realistic stamp effect -->
+                                        <filter id="ink-bleed" x="-10%" y="-10%" width="120%" height="120%">
+                                            <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise" />
+                                            <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.2" xChannelSelector="R" yChannelSelector="G"/>
+                                        </filter>
+                                        <!-- Top Arc Path for Company Name -->
+                                        <path id="textPathTop" d="M 18,100 A 82,82 0 1,1 182,100" />
+                                        <!-- Bottom Arc Path for Address -->
+                                        <path id="textPathBottom" d="M 178,100 A 78,78 0 0,1 22,100" />
+                                    </defs>
 
-                                    <!-- Center Box Text -->
-                                    <text x="100" y="75" font-size="20" font-weight="extrabold" fill="currentColor" stroke="none" text-anchor="middle">收 據</text>
-                                    <text x="100" y="98" font-size="16" font-weight="bold" fill="currentColor" stroke="none" text-anchor="middle">專用章</text>
-                                    <text x="100" y="118" font-size="11" font-weight="bold" fill="currentColor" stroke="none" text-anchor="middle">TEL: 2794-8555</text>
-                                    <text x="100" y="132" font-size="11" font-weight="bold" fill="currentColor" stroke="none" text-anchor="middle">2867-1198</text>
+                                    <g filter="url(#ink-bleed)">
+                                        <!-- Outer Double Circle Border -->
+                                        <circle cx="100" cy="100" r="95" fill="none" stroke="currentColor" stroke-width="4.5" />
+                                        <circle cx="100" cy="100" r="88" fill="none" stroke="currentColor" stroke-width="1.8" />
+                                        
+                                        <!-- Middle Inner Circle -->
+                                        <circle cx="100" cy="100" r="58" fill="none" stroke="currentColor" stroke-width="1.8" />
+                                        
+                                        <!-- Upper Text: Company Name -->
+                                        <text font-size="13.5" font-weight="700" fill="currentColor" letter-spacing="0.5">
+                                            <textPath href="#textPathTop" startOffset="50%" text-anchor="middle">
+                                                康宏數位科技物流股份有限公司
+                                            </textPath>
+                                        </text>
+
+                                        <!-- Lower Text: Address -->
+                                        <text font-size="10.5" font-weight="700" fill="currentColor" letter-spacing="0.2">
+                                            <textPath href="#textPathBottom" startOffset="52%" text-anchor="middle">
+                                                台北市內湖區新湖一路81號8樓
+                                            </textPath>
+                                        </text>
+
+                                        <!-- Plum Blossom Flower Icon on the bottom left -->
+                                        <g transform="translate(34, 134) scale(0.42)" fill="currentColor">
+                                            <path d="M12 2C10.5 2 9.5 3.2 9.8 4.6C8.5 4.1 7 4.9 6.7 6.3C5.5 6.1 4.3 7.1 4.4 8.5C3.1 9.1 2.7 10.6 3.4 11.8C2.5 12.8 2.7 14.4 3.8 15.2C3.3 16.5 4.1 17.9 5.5 18.2C5.3 19.5 6.3 20.7 7.7 20.6C8.3 21.8 9.8 22.3 11 21.6C12 22.5 13.5 22.3 14.3 21.3C15.5 21.8 16.9 21.1 17.3 19.8C18.5 19.8 19.5 18.7 19.3 17.3C20.4 16.6 20.7 15.1 20 13.9C20.8 12.8 20.5 11.3 19.3 10.5C19.7 9.2 18.8 7.8 17.4 7.6C17.5 6.2 16.4 5.1 15 5.2C14.3 4 12.8 3.6 11.6 4.3C11 3 9.7 2.1 8.3 2.5L12 2Z"/>
+                                        </g>
+
+                                        <!-- Center Texts -->
+                                        <text x="100" y="73" font-size="21" font-weight="900" fill="currentColor" text-anchor="middle" letter-spacing="4">收 據</text>
+                                        <text x="100" y="97" font-size="16" font-weight="800" fill="currentColor" text-anchor="middle" letter-spacing="3">專用章</text>
+                                        <text x="100" y="117" font-size="11.5" font-weight="800" fill="currentColor" text-anchor="middle" letter-spacing="0.5">TEL:2794-8555</text>
+                                        <text x="100" y="132" font-size="11.5" font-weight="800" fill="currentColor" text-anchor="middle" letter-spacing="0.5">2867-1198</text>
+                                    </g>
                                 </svg>
+                                
+                                <!-- Custom Uploaded Image Element (hidden by default) -->
+                                <img id="uploaded-stamp-img" class="w-full h-full object-contain stamp-overlay hidden" alt="印章" />
                             </div>
                             <div class="text-xs font-bold text-slate-700 mt-1">公司蓋章</div>
                         </div>
@@ -379,16 +409,57 @@
             }
         }
 
-        // CSV Parser
+        // CSV Parser (Handles multi-line quoted headers and filters out Row 1 headers)
         function parseCSV(text) {
-            const lines = text.split('\n').map(l => l.trim()).filter(l => l);
-            if (lines.length <= 1) return null;
+            if (!text || !text.trim()) return null;
+
+            // Parse CSV into rows array handling quoted strings containing newlines
+            const rows = [];
+            let currentRow = [];
+            let currentCell = '';
+            let inQuotes = false;
+
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                const nextChar = text[i + 1];
+
+                if (char === '"') {
+                    if (inQuotes && nextChar === '"') {
+                        currentCell += '"';
+                        i++;
+                    } else {
+                        inQuotes = !inQuotes;
+                    }
+                } else if (char === ',' && !inQuotes) {
+                    currentRow.push(currentCell.trim());
+                    currentCell = '';
+                } else if ((char === '\r' || char === '\n') && !inQuotes) {
+                    if (char === '\r' && nextChar === '\n') {
+                        i++;
+                    }
+                    currentRow.push(currentCell.trim());
+                    if (currentRow.some(c => c !== '')) {
+                        rows.push(currentRow);
+                    }
+                    currentRow = [];
+                    currentCell = '';
+                } else {
+                    currentCell += char;
+                }
+            }
+            if (currentCell || currentRow.length > 0) {
+                currentRow.push(currentCell.trim());
+                if (currentRow.some(c => c !== '')) {
+                    rows.push(currentRow);
+                }
+            }
+
+            if (rows.length <= 1) return null;
 
             const records = [];
-            for (let i = 1; i < lines.length; i++) {
-                // Split by comma handling quotes
-                const row = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(cell => cell.replace(/^"|"$/g, '').trim());
-                
+            // Skip rows[0] (header row) and parse data starting from row 1
+            for (let i = 1; i < rows.length; i++) {
+                const row = rows[i];
                 const receiptNo = row[0] || '';
                 const location = row[1] || '';
                 const date = row[2] || '';
@@ -400,9 +471,8 @@
                 const venueFee = parseFloat(row[8]) || 0;
                 const subtotal = parseFloat(row[9]) || 0;
 
-                // Only include rows with valid data
-                if (receiptNo && (customer || location || subtotal > 0)) {
-                    // Format date
+                // Explicitly ignore any header labels that might leak in
+                if (receiptNo && receiptNo !== '請款單號' && !receiptNo.includes('請款') && (customer || location || subtotal > 0)) {
                     let fullDate = date;
                     if (date.includes('/')) {
                         const parts = date.split('/');
@@ -434,8 +504,9 @@
             const dateSelect = document.getElementById('date-filter');
             const vendorSelect = document.getElementById('vendor-filter');
 
-            const dates = [...new Set(allRecords.map(r => r.date).filter(Boolean))];
-            const vendors = [...new Set(allRecords.map(r => r.customer).filter(Boolean))];
+            // Exclude empty and header-like options
+            const dates = [...new Set(allRecords.map(r => r.date).filter(d => d && d !== '請款單日期'))];
+            const vendors = [...new Set(allRecords.map(r => r.customer).filter(v => v && !v.includes('客戶名稱')))];
 
             dateSelect.innerHTML = '<option value="">全部日期</option>' + 
                 dates.map(d => `<option value="${d}">${d}</option>`).join('');
@@ -578,6 +649,22 @@
             document.getElementById('item2-price').innerText = '--';
             document.getElementById('item2-subtotal').innerText = '--';
             document.getElementById('receipt-total').innerText = 'NT$ 0';
+        }
+
+        // Handle Uploading Custom Stamp Image File
+        function handleStampUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imgEl = document.getElementById('uploaded-stamp-img');
+                    const svgEl = document.getElementById('svg-stamp');
+                    imgEl.src = e.target.result;
+                    imgEl.classList.remove('hidden');
+                    svgEl.classList.add('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
         }
     </script>
 </body>
