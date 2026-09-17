@@ -53,8 +53,9 @@
                 display: none !important;
             }
         }
-        .stamp-overlay {
-            mix-blend-mode: multiply;
+        .stamp-ink {
+            color: #1e40af;
+            filter: drop-shadow(0 1px 1px rgba(30, 64, 175, 0.2));
         }
     </style>
 </head>
@@ -141,11 +142,6 @@
                     <span id="current-receipt-no" class="text-sm font-bold text-slate-700">未選擇</span>
                 </div>
                 <div class="flex items-center space-x-3">
-                    <label class="cursor-pointer inline-flex items-center space-x-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-2 rounded-lg text-xs font-medium transition border border-slate-300">
-                        <i data-lucide="upload" class="w-4 h-4"></i>
-                        <span>上傳印章圖片</span>
-                        <input type="file" accept="image/*" onchange="handleStampUpload(event)" class="hidden">
-                    </label>
                     <button onclick="window.print()" class="inline-flex items-center space-x-2 bg-brand-600 hover:bg-brand-700 text-white font-medium px-4 py-2 rounded-lg text-sm transition shadow-sm">
                         <i data-lucide="printer" class="w-4 h-4"></i>
                         <span>列印 / 匯出 PDF</span>
@@ -240,7 +236,7 @@
                         </div>
                     </div>
 
-                    <!-- Footer & Stamp Section -->
+                    <!-- Footer & Official Stamp Section -->
                     <div class="flex justify-between items-end mt-12 pt-6 border-t border-slate-200">
                         <div class="text-xs text-slate-500 space-y-1">
                             <p>* 如對本單據內容有任何疑問，請於 7 日內與開立單位聯繫。</p>
@@ -248,12 +244,48 @@
                         </div>
                         
                         <div class="text-center relative pr-4">
-                            <div id="stamp-container" class="w-36 h-36 relative inline-block transform -rotate-3 border-2 border-dashed border-slate-300 rounded-lg flex items-center justify-center bg-slate-50 overflow-hidden">
-                                <img id="uploaded-stamp-img" class="w-full h-full object-contain stamp-overlay hidden" alt="公司蓋章" />
-                                <div id="stamp-placeholder" class="text-xs text-slate-400 p-2 text-center">
-                                    <i data-lucide="image-plus" class="w-6 h-6 mx-auto mb-1 opacity-50"></i>
-                                    <span>尚未上傳印章<br>請點上方按鈕上傳</span>
-                                </div>
+                            <!-- Official Stamp SVG matching user's official seal exactly -->
+                            <div class="w-40 h-40 relative inline-block stamp-ink flex items-center justify-center">
+                                <svg viewBox="0 0 300 300" class="w-full h-full">
+                                    <defs>
+                                        <path id="top-path" d="M 35,150 A 115,115 0 1,1 265,150" />
+                                        <path id="bottom-path" d="M 265,150 A 115,115 0 0,1 35,150" />
+                                        <path id="inner-top" d="M 65,145 A 85,85 0 0,1 235,145" />
+                                    </defs>
+                                    
+                                    <!-- Outer double circles -->
+                                    <circle cx="150" cy="150" r="140" fill="none" stroke="currentColor" stroke-width="4.5"/>
+                                    <circle cx="150" cy="150" r="132" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                                    
+                                    <!-- Inner circle -->
+                                    <circle cx="150" cy="150" r="98" fill="none" stroke="currentColor" stroke-width="2"/>
+                                    
+                                    <!-- Left/Right decorative flowers -->
+                                    <g transform="translate(24, 150) scale(0.6)">
+                                        <path d="M0,-12 C5,-15 12,-10 10,-3 C15,0 12,8 5,8 C0,12 -8,8 -7,2 C-12,-2 -10,-10 -3,-12 Z" fill="none" stroke="currentColor" stroke-width="2"/>
+                                    </g>
+                                    <g transform="translate(276, 150) scale(0.6)">
+                                        <path d="M0,-12 C5,-15 12,-10 10,-3 C15,0 12,8 5,8 C0,12 -8,8 -7,2 C-12,-2 -10,-10 -3,-12 Z" fill="none" stroke="currentColor" stroke-width="2"/>
+                                    </g>
+
+                                    <!-- Top text: 康宏數位科技物流股份有限公司 -->
+                                    <text font-size="16.5" font-weight="bold" fill="currentColor" letter-spacing="1.2">
+                                        <textPath href="#top-path" startOffset="50%" text-anchor="middle">康宏數位科技物流股份有限公司</textPath>
+                                    </text>
+
+                                    <!-- Bottom text: 台北市內湖區新湖一路81號及83號 -->
+                                    <text font-size="14.5" font-weight="bold" fill="currentColor" letter-spacing="0.8">
+                                        <textPath href="#bottom-path" startOffset="50%" text-anchor="middle">台北市內湖區新湖一路81號及83號</textPath>
+                                    </text>
+
+                                    <!-- Inner Center Text -->
+                                    <text x="150" y="112" font-size="28" font-weight="bold" text-anchor="middle" fill="currentColor" letter-spacing="6">收據</text>
+                                    <text x="150" y="152" font-size="28" font-weight="bold" text-anchor="middle" fill="currentColor" letter-spacing="6">專用章</text>
+                                    
+                                    <!-- Phone numbers -->
+                                    <text x="150" y="193" font-size="15" font-weight="bold" text-anchor="middle" fill="currentColor">TEL:2794-3555</text>
+                                    <text x="150" y="222" font-size="20" font-weight="bold" text-anchor="middle" fill="currentColor" letter-spacing="1">2867-1198</text>
+                                </svg>
                             </div>
                             <div class="text-xs font-bold text-slate-700 mt-1">公司蓋章</div>
                         </div>
@@ -276,21 +308,6 @@
             lucide.createIcons();
             fetchSheetData();
         });
-
-        function handleStampUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const imgEl = document.getElementById('uploaded-stamp-img');
-                    const placeholderEl = document.getElementById('stamp-placeholder');
-                    imgEl.src = e.target.result;
-                    imgEl.classList.remove('hidden');
-                    placeholderEl.classList.add('hidden');
-                }
-                reader.readAsDataURL(file);
-            }
-        }
 
         async function fetchSheetData() {
             const refreshIcon = document.getElementById('refresh-icon');
@@ -376,7 +393,7 @@
             if (rows.length <= 1) return null;
 
             const records = [];
-            // Start from index 1 to completely exclude header row (index 0)
+            // Start from index 1 to completely exclude header row
             for (let i = 1; i < rows.length; i++) {
                 const row = rows[i];
                 const receiptNo = row[0] || '';
@@ -386,11 +403,8 @@
                 const customer = row[4] || '';
                 const pallets = parseFloat(row[5]) || 0;
                 const pricePerPallet = parseFloat(row[6]) || 200;
-                const days = parseFloat(row[7]) || 0;
-                const venueUnitPrice = parseFloat(row[8]) || 5000;
-                const subtotal = parseFloat(row[9]) || 0;
+                const days = parseFloat(row[7]) || 0; // H欄位: Sorting天數
 
-                // Validate header row doesn't leak into data records
                 if (receiptNo && receiptNo !== '請款單號' && !receiptNo.includes('請款') && (customer || location) && pallets > 0) {
                     let fullDate = date;
                     if (date.includes('/')) {
@@ -400,9 +414,9 @@
                         fullDate = `2026年${month}月${day}日`;
                     }
 
-                    // Calculation logic:
-                    // Sorting fee = pallets * 200
-                    // Venue fee = days * 5000
+                    // 正確計費邏輯：
+                    // 1. Sorting 服務費 = 板數 × $200
+                    // 2. 場地費 = 天數 (H欄) × $5,000
                     const sortingSubtotal = pallets * 200;
                     const venueSubtotal = days * 5000;
                     const calculatedSubtotal = sortingSubtotal + venueSubtotal;
@@ -416,7 +430,7 @@
                         customer,
                         pallets,
                         days,
-                        subtotal: subtotal || calculatedSubtotal
+                        subtotal: calculatedSubtotal
                     });
                 }
             }
@@ -427,7 +441,6 @@
             const dateSelect = document.getElementById('date-filter');
             const vendorSelect = document.getElementById('vendor-filter');
 
-            // Strictly filter out any header strings from dropdown values
             const dates = [...new Set(allRecords.map(r => r.date).filter(d => d && d !== '請款單日期' && !d.includes('日期')))];
             const vendors = [...new Set(allRecords.map(r => r.customer).filter(v => v && !v.includes('客戶名稱') && !v.includes('廠商')))];
 
