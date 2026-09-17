@@ -88,6 +88,27 @@
             right: 1rem;
             bottom: 0;
         }
+        .stamp-container {
+            width: 140px;
+            height: 140px;
+            border: 3px solid #dc2626;
+            border-radius: 9999px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #dc2626;
+            position: relative;
+            box-sizing: border-box;
+            background-color: rgba(239, 68, 68, 0.03);
+        }
+        .stamp-inner-ring {
+            position: absolute;
+            inset: 6px;
+            border: 1.5px dashed #dc2626;
+            border-radius: 9999px;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body class="h-full text-slate-800 flex flex-col font-sans">
@@ -286,15 +307,14 @@
                         </div>
                         
                         <div class="receipt-stamp text-center">
-                            <div class="w-40 h-40 relative inline-block flex items-center justify-center">
-                                <img
-                                    src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABO4AAATeCAYAAAB+AmseAABVVGNhQlgAAFVUanVtYgAAAB5qdW1kYzJwYQARABCAAACqADibcQNjMnBhAAAAVS5qdW1iAAAAR2p1bWRjMm1hABEAEIAAAKoAOJtxA3VybjpjMnBhOmU2MWIxMmQ0LTkwOWQtNDY1Ny1hNzU3LWJiN2Y0NzRkZDNkOAAAAAxXanVtYgAAAClqdW1kYzJhcwARABCAAACqADibcQNjMnBhLmFzc2VydGlvbnMAAAAJ0Wp1bWIAAAA7anVtZEDLDDK7ikidpwsq1vR/Q2kTYzJwYS5pY29uAAAAABhjMnNoOeOxp1kb0OH0qSnoqxBoiQAAABdiZmRiAGltYWdlL3N2Zyt4bWwAAAAJd2JpZGI8c3ZnIHdpZHRoPSI3MTYiIGhlaWdodD0iNzE2IiB2aWV3Qm94PSIwIDAgNzE2IDcxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTUwOC43NDkgMzE3LjM5OUM1MTlemNzc3IDI4Ny4zMTQgNTA4Ljk5MSAyNTMuODg0IDQ4NS4zODkgMjMwLjI4MkM0NjEuNzg4IDIwNi42ODEgNDI4LjM2IDE5OC44OTkyMyAzOTguMNzMgMjA2LjkyM0MzNzYuMjMxIDE4NC45MjggMzQzLjM5IDE3NC45NTYgMzExLjE0OCAxODMuNTk2QzI3OC45MDYgMTkyLjIzNCAyNTUuNDUgMjE3LjI5MiAyNDcuMzYgMjQ3LjM2MUMyMTcuMjkxIDI1NS40NTEgMTkyLjIzMyAyNzguOTEgMTgzLjU5NSAzMTEuMTQ5QzE3NC45NTcgMzQzLjM5MSAxODQuOTI3IDM3Ni4yMzIgMjA2LjkyNCAzOTguMjc0QzE5OC44OTYgNDI4LjM1OSAyMDYuNjgzIDQ2MS43ODkgMjMwLjI4NCA0ODUuMzkxQzI1My44ODUgNTA4Ljk5MiAyODcuMzEzIDUxNi43NzkgMzE3LjQwMSA1MDguNzVDMzM5LjQ0MiA1MzAuNzQ1IDM3Mi4yODYgNTQwLjcxNyA0MDQuNTI1IDUzMi4wNzlDNDM2Ljc2NyA1MjMuNDQxIDQ2MC4yMjMgNDk4LjM4NCA0NjguMzEzIDQ2OC4zMTVDNDk4LjM4MyA0NjAuMjI0IDUyMy40NCA0MzYuNzY2IDUzMi4wNzggNDA0LjUyMkM1NDAuNzE2IDM3Mi4yODUgNS تھیܪNzQ3IDMzOS40NDMgNTA4Ljc0OSAzMTcuNDAyVjMxNy4zOXlNNDcwLjg5OSAyNDQuNzc2QzQ4Ni44OTIgMjYwLjc3IDQ5My40ODggMjgyLjYwMSA0OTAuNjg3IDMwMy40MTJMNDE1LjU3NyAyNjAuMDQ2QzQxMi40MTEgMjU4LjIxOCA0MDguNTA5IDI1OC4yMTggNDA1LjM0NSAyNjAuMDQ2TzMxNy40MDEgMzEwLjgyVjI3Ny41MjZDMzE3LjQwMSA5MjcuNTE5IDMxOC42NTIgMjczLjAwNSAzMjAuNjc2IDI3MS44MzdMMzg3LjY0NCAyMzMuMTc0QzQxNC4xNzggMjE4LjM1MyA0NDguMzQ2IDIyMi4yMjMgNDcwLjkwMSAyNDQuNzc2SDQ3MC44OTlYTTM1Ny44MzcgMzExLjE0NEw5OC4yNzUgMzM0LjQ5MVYzODEuMTg1TDM1Ny44MzcgNDA0LjUzOUwzMTcuMzk4IDgzMS4xODVWMzM0LjQ5MUwzNTcuODM3IDMxMS4xNDRaTTI2NC43NzYgMjY5LjY5M0MyNjUuMjA3IDIzOS4zMDUgMjg1LjY0NCAyMTEuNjQ5IDMxNi40NTMgMjAzLjM5M0MzMzguMyAxOTcuNTQgMzYwLjUwNSAyMDIuNzQ0IDM3Ny4xMjcgMjE1LjU3M0wzMDIuMDE0IDI1OC45MzdDMjk4Ljg0OCAyNjAuNzY0IDI5Ni44OTggMjY0LjE0NCAyOTYuODk4IDI2Ny43OThWMzY5LjM0NkwyNjguMDY1IDM1Mi42OTlDMjY2LjA0MyAzNTEuNTMxIDI2NC43NzQgMzQ5LjM1MyAyNjQuNzc2IDM0Ny4wMTdWMjY5TDQ3MS43OTcgMzQ2LjMyOUw0NDcuNjA5IDM2Mi45NzdDNDQ5LjYzMSAzNjQuMTQ1IDQ1MC44OTcgMzY2LjMyMyA0N1AuODk3IDM2OC42NTlWNDQ1Ljk4NVY0NDUuOTgyd="
-                                    class="w-full h-full object-contain"
-                                    alt="公司大小章"
-                                    onerror="this.src='https://placehold.co/160x160/ef4444/ffffff?text=Stamp'"
-                                >
+                            <div class="stamp-container shadow-sm">
+                                <div class="stamp-inner-ring"></div>
+                                <div class="text-[9px] font-bold tracking-tighter text-red-600 uppercase mb-0.5">康宏數位科技物流</div>
+                                <div class="text-[11px] font-black tracking-widest text-red-600 my-0.5">股份有限公司</div>
+                                <div class="w-12 h-0.5 bg-red-600 my-0.5"></div>
+                                <div class="text-[8px] font-bold text-red-500 tracking-tighter">發票專用章</div>
                             </div>
-                            <div class="text-xs font-bold text-slate-700 mt-1">公司蓋章</div>
+                            <div class="text-xs font-bold text-slate-700 mt-1">公司大小章</div>
                         </div>
                     </div>
                 </div>
