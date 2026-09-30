@@ -1,3 +1,16 @@
+
+
+貼上的文字 (1).txt
+文件
+這段程式碼有一個問題，統編開頭是0無法輸入保存，請幫我更新程式碼
+已修正，統編以 8 碼文字處理，像 01234567 可正常保存，匯入及 Excel 匯出也會保留開頭的 0。已通過儲存與匯入測試。
+
+
+收據管理系統_統編修正版.txt
+文件
+
+
+
 <!DOCTYPE html>
 <html lang="zh-TW" class="h-full bg-slate-50">
 <head>
@@ -436,7 +449,7 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 mb-1">統一編號</label>
-                        <input type="text" id="form-taxid" placeholder="例如: 86427715" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-600 outline-none">
+                        <input type="text" id="form-taxid" inputmode="numeric" maxlength="8" pattern="[0-9]{8}" title="請輸入 8 碼統一編號，可使用 0 開頭" placeholder="例如: 86427715" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-600 outline-none">
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 mb-1">作業地點</label>
@@ -472,7 +485,14 @@
         let filteredRecords = [];
         let selectedRecord = null;
         let downloadStatusMap = JSON.parse(localStorage.getItem('sorting_download_status') || '{}');
-        let localCustomRecords = JSON.parse(localStorage.getItem('sorting_custom_records') || '[]');
+        // 統編是識別碼，始終使用文字；補回來源數字化時遺失的前導 0。
+        function normalizeTaxId(value) {
+            const text = String(value ?? '').trim();
+            return /^\d{1,8}$/.test(text) ? text.padStart(8, '0') : text;
+        }
+
+        let localCustomRecords = JSON.parse(localStorage.getItem('sorting_custom_records') || '[]')
+            .map(record => ({ ...record, taxId: normalizeTaxId(record.taxId) }));
 
         window.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
@@ -595,7 +615,7 @@
                 const receiptNo = row[0] || '';
                 const location = row[1] || '';
                 const date = row[2] || '';
-                const taxId = row[3] || '';
+                const taxId = normalizeTaxId(row[3]);
                 const customer = row[4] || '';
                 const pallets = parseFloat(row[5]) || 0;
                 const days = parseFloat(row[7]) || 0;
@@ -885,7 +905,12 @@
             const receiptNo = document.getElementById('form-receipt-no').value.trim();
             const date = document.getElementById('form-date').value.trim();
             const customer = document.getElementById('form-customer').value.trim();
-            const taxId = document.getElementById('form-taxid').value.trim();
+            const taxId = normalizeTaxId(document.getElementById('form-taxid').value);
+            if (taxId && !/^\d{8}$/.test(taxId)) {
+                alert('統一編號請輸入 8 碼數字，可使用 0 開頭。');
+                document.getElementById('form-taxid').focus();
+                return;
+            }
             const location = document.getElementById('form-location').value.trim();
             const pallets = parseFloat(document.getElementById('form-pallets').value) || 0;
             const days = parseFloat(document.getElementById('form-days').value) || 0;
@@ -936,7 +961,12 @@
             
             allRecords.forEach(r => {
                 const status = downloadStatusMap[r.receiptNo] ? "已下載" : "未下載";
-                csvContent += `"${r.receiptNo}","${r.date}","${r.customer}","${r.taxId}","${r.location}",${r.pallets},${r.days},${r.subtotal},"${status}"\r\n`;
+                // Excel 開啟 CSV 會自動轉成數字，僅對 8 碼統編使用文字公式。
+                const taxId = normalizeTaxId(r.taxId);
+                const taxIdCell = /^\d{8}$/.test(taxId)
+                    ? `"=""${taxId}"""`
+                    : `"${taxId.replace(/"/g, '""')}"`;
+                csvContent += `"${r.receiptNo}","${r.date}","${r.customer}",${taxIdCell},"${r.location}",${r.pallets},${r.days},${r.subtotal},"${status}"\r\n`;
             });
 
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
